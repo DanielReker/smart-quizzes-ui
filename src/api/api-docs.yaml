@@ -7,20 +7,21 @@ servers:
     url: http://localhost:8080
 paths:
   /quizzes:
-    post:
-      operationId: createQuiz
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/QuizCreateRequest"
-        required: true
+    get:
+      operationId: getUserQuizzes
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/QuizResponse"
+                $ref: "#/components/schemas/QuizzesResponse"
           description: OK
         "401":
           content:
@@ -44,15 +45,20 @@ paths:
         - bearer-key: []
       tags:
         - quiz-controller
-  /quizzes/my:
-    get:
-      operationId: getMyQuizzes
+    post:
+      operationId: createQuiz
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuizCreateRequest"
+        required: true
       responses:
         "200":
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/QuizzesResponse"
+                $ref: "#/components/schemas/QuizResponse"
           description: OK
         "401":
           content:
@@ -899,9 +905,6 @@ components:
             - "null"
           format: int32
           minimum: 1
-        mySubmissionsCount:
-          type: integer
-          format: int64
         name:
           type: string
           maxLength: 255
@@ -925,7 +928,6 @@ components:
         - allowAnonymous
         - createdDate
         - id
-        - mySubmissionsCount
         - name
         - questions
         - status

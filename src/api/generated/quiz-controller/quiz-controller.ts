@@ -26,6 +26,7 @@ import type {
 import type {
   AiGenerateQuestionsRequest,
   ErrorDto,
+  GetUserQuizzesParams,
   QuizCreateRequest,
   QuizQuestionsUpsertRequest,
   QuizResponse,
@@ -57,6 +58,92 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getUserQuizzes = (
+    params: GetUserQuizzesParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<QuizzesResponse>(
+      {url: `/quizzes`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+
+
+
+
+export const getGetUserQuizzesQueryKey = (params?: GetUserQuizzesParams,) => {
+    return [
+    `/quizzes`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetUserQuizzesQueryOptions = <TData = Awaited<ReturnType<typeof getUserQuizzes>>, TError = ErrorDto>(params: GetUserQuizzesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserQuizzes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetUserQuizzesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserQuizzes>>> = ({ signal }) => getUserQuizzes(params, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserQuizzes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetUserQuizzesQueryResult = NonNullable<Awaited<ReturnType<typeof getUserQuizzes>>>
+export type GetUserQuizzesQueryError = ErrorDto
+
+
+export function useGetUserQuizzes<TData = Awaited<ReturnType<typeof getUserQuizzes>>, TError = ErrorDto>(
+ params: GetUserQuizzesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserQuizzes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUserQuizzes>>,
+          TError,
+          Awaited<ReturnType<typeof getUserQuizzes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetUserQuizzes<TData = Awaited<ReturnType<typeof getUserQuizzes>>, TError = ErrorDto>(
+ params: GetUserQuizzesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserQuizzes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUserQuizzes>>,
+          TError,
+          Awaited<ReturnType<typeof getUserQuizzes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetUserQuizzes<TData = Awaited<ReturnType<typeof getUserQuizzes>>, TError = ErrorDto>(
+ params: GetUserQuizzesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserQuizzes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetUserQuizzes<TData = Awaited<ReturnType<typeof getUserQuizzes>>, TError = ErrorDto>(
+ params: GetUserQuizzesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserQuizzes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetUserQuizzesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
 
 export const createQuiz = (
     quizCreateRequest: QuizCreateRequest,
@@ -119,92 +206,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getCreateQuizMutationOptions(options), queryClient);
     }
-    export const getMyQuizzes = (
-
- options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
-) => {
-
-
-      return customInstance<QuizzesResponse>(
-      {url: `/quizzes/my`, method: 'GET', signal
-    },
-      options);
-    }
-
-
-
-
-export const getGetMyQuizzesQueryKey = () => {
-    return [
-    `/quizzes/my`
-    ] as const;
-    }
-
-
-export const getGetMyQuizzesQueryOptions = <TData = Awaited<ReturnType<typeof getMyQuizzes>>, TError = ErrorDto>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyQuizzes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetMyQuizzesQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyQuizzes>>> = ({ signal }) => getMyQuizzes(requestOptions, signal);
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyQuizzes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetMyQuizzesQueryResult = NonNullable<Awaited<ReturnType<typeof getMyQuizzes>>>
-export type GetMyQuizzesQueryError = ErrorDto
-
-
-export function useGetMyQuizzes<TData = Awaited<ReturnType<typeof getMyQuizzes>>, TError = ErrorDto>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyQuizzes>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getMyQuizzes>>,
-          TError,
-          Awaited<ReturnType<typeof getMyQuizzes>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyQuizzes<TData = Awaited<ReturnType<typeof getMyQuizzes>>, TError = ErrorDto>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyQuizzes>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getMyQuizzes>>,
-          TError,
-          Awaited<ReturnType<typeof getMyQuizzes>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyQuizzes<TData = Awaited<ReturnType<typeof getMyQuizzes>>, TError = ErrorDto>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyQuizzes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyQuizzes<TData = Awaited<ReturnType<typeof getMyQuizzes>>, TError = ErrorDto>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyQuizzes>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetMyQuizzesQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-export const getQuiz = (
+    export const getQuiz = (
     quizId: string,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {

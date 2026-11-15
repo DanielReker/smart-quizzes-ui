@@ -18,7 +18,6 @@ export interface QuizResponse {
      * @nullable
      */
   maxAttempts?: number | null;
-  mySubmissionsCount: number;
   /**
      * @minLength 0
      * @maxLength 255

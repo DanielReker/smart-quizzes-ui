@@ -123,7 +123,8 @@ export const TakeQuizPage = () => {
         </Card>
     );
 
-    if ((isSuccess || quiz.mySubmissionsCount > 0) && !isAdmin) {
+    // TODO: Добавить проверку количества оставшихся попыток
+    if (isSuccess && !isAdmin) {
         return (
             <Container maxWidth="sm" sx={{ mt: 10, textAlign: 'center' }}>
                 <CheckCircleOutlineIcon color="success" sx={{ fontSize: 80, mb: 2 }} />

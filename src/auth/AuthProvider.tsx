@@ -81,6 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             register,
             isAdmin: userMe?.roles?.includes('ADMIN') || false,
             isRegistered: userMe?.isRegistered || false,
+            userId: userMe?.id || null,
             userLogin: userMe?.login || null
         }}>
             {children}

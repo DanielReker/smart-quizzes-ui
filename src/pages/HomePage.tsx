@@ -1,10 +1,15 @@
 import {Box, Button, List, ListItem, ListItemText, Paper, Typography} from '@mui/material';
 import {Link} from "react-router";
-import {useGetMyQuizzes} from "../api/generated";
+import {useGetUserQuizzes} from "../api/generated";
 import QuizStatus from "../components/QuizStatus.tsx";
+import {useAuth} from "../auth/AuthContext.tsx";
 
 export const HomePage = () => {
-    const { data: myQuizzes } = useGetMyQuizzes();
+    const { userId } = useAuth();
+    const { data: myQuizzes } = useGetUserQuizzes(
+        { userId: userId! },
+        { query: { enabled: !!userId } }
+    );
 
     return (
         <div>
