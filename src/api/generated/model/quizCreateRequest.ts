@@ -6,11 +6,19 @@
  */
 
 export interface QuizCreateRequest {
+  allowAnonymous: boolean;
   /** @nullable */
   description?: string | null;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  maxAttempts?: number | null;
   /**
      * @minLength 0
      * @maxLength 255
      */
   name: string;
+  /** @nullable */
+  timeToComplete?: string | null;
 }

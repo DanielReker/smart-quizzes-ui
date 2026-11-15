@@ -28,6 +28,7 @@ export * from './quizCreateRequest';
 export * from './quizQuestionsUpsertRequest';
 export * from './quizResponse';
 export * from './quizResponseStatus';
+export * from './quizUpdateRequest';
 export * from './quizzesResponse';
 export * from './sessionResponse';
 export * from './shortQuizResponse';

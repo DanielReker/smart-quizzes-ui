@@ -115,6 +115,50 @@ paths:
         - bearer-key: []
       tags:
         - quiz-controller
+    patch:
+      operationId: updateQuiz
+      parameters:
+        - in: path
+          name: quizId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuizUpdateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/QuizResponse"
+          description: OK
+        "401":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Unauthorized
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Not Found
+        "409":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Conflict
+      security:
+        - bearer-key: []
+      tags:
+        - quiz-controller
   /quizzes/{quizId}/questions:
     put:
       operationId: upsertQuestions
@@ -801,15 +845,29 @@ components:
     QuizCreateRequest:
       type: object
       properties:
+        allowAnonymous:
+          type: boolean
         description:
           type:
             - string
             - "null"
+        maxAttempts:
+          type:
+            - integer
+            - "null"
+          format: int32
+          minimum: 1
         name:
           type: string
           maxLength: 255
           minLength: 0
+        timeToComplete:
+          type:
+            - string
+            - "null"
+          format: duration
       required:
+        - allowAnonymous
         - name
     QuizQuestionsUpsertRequest:
       type: object
@@ -823,6 +881,8 @@ components:
     QuizResponse:
       type: object
       properties:
+        allowAnonymous:
+          type: boolean
         createdDate:
           type: string
           format: date-time
@@ -833,6 +893,12 @@ components:
         id:
           type: string
           format: uuid
+        maxAttempts:
+          type:
+            - integer
+            - "null"
+          format: int32
+          minimum: 1
         mySubmissionsCount:
           type: integer
           format: int64
@@ -850,13 +916,43 @@ components:
             - DRAFT
             - ACTIVE
             - FINISHED
+        timeToComplete:
+          type:
+            - string
+            - "null"
+          format: duration
       required:
+        - allowAnonymous
         - createdDate
         - id
         - mySubmissionsCount
         - name
         - questions
         - status
+    QuizUpdateRequest:
+      type: object
+      properties:
+        allowAnonymous:
+          type: boolean
+        description:
+          type:
+            - string
+            - "null"
+        maxAttempts:
+          type:
+            - integer
+            - "null"
+          format: int32
+          minimum: 1
+        name:
+          type: string
+          maxLength: 255
+          minLength: 0
+        timeToComplete:
+          type:
+            - string
+            - "null"
+          format: duration
     QuizzesResponse:
       type: object
       properties:
@@ -876,6 +972,8 @@ components:
     ShortQuizResponse:
       type: object
       properties:
+        allowAnonymous:
+          type: boolean
         createdDate:
           type: string
           format: date-time
@@ -886,6 +984,12 @@ components:
         id:
           type: string
           format: uuid
+        maxAttempts:
+          type:
+            - integer
+            - "null"
+          format: int32
+          minimum: 1
         name:
           type: string
           maxLength: 255
@@ -896,7 +1000,13 @@ components:
             - DRAFT
             - ACTIVE
             - FINISHED
+        timeToComplete:
+          type:
+            - string
+            - "null"
+          format: duration
       required:
+        - allowAnonymous
         - createdDate
         - id
         - name

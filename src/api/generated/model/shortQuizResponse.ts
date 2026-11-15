@@ -7,14 +7,22 @@
 import type { ShortQuizResponseStatus } from './shortQuizResponseStatus';
 
 export interface ShortQuizResponse {
+  allowAnonymous: boolean;
   createdDate: string;
   /** @nullable */
   description?: string | null;
   id: string;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  maxAttempts?: number | null;
   /**
      * @minLength 0
      * @maxLength 255
      */
   name: string;
   status: ShortQuizResponseStatus;
+  /** @nullable */
+  timeToComplete?: string | null;
 }

@@ -29,6 +29,7 @@ import type {
   QuizCreateRequest,
   QuizQuestionsUpsertRequest,
   QuizResponse,
+  QuizUpdateRequest,
   QuizzesResponse,
   StatsResponse,
   SubmissionCreateRequest,
@@ -288,7 +289,69 @@ export function useGetQuiz<TData = Awaited<ReturnType<typeof getQuiz>>, TError =
 
 
 
-export const upsertQuestions = (
+export const updateQuiz = (
+    quizId: string,
+    quizUpdateRequest: QuizUpdateRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<QuizResponse>(
+      {url: `/quizzes/${quizId}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: quizUpdateRequest, signal
+    },
+      options);
+    }
+
+
+
+
+export const getUpdateQuizMutationKey = () => ['updateQuiz'] as const;
+
+export const getUpdateQuizMutationOptions = <TError = ErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateQuiz>>, TError,UpdateQuizMutationVariables, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateQuiz>>, TError,UpdateQuizMutationVariables, TContext> => {
+
+const mutationKey = getUpdateQuizMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateQuiz>>, UpdateQuizMutationVariables> = (props) => {
+          const {quizId,data} = props ?? {};
+
+          return  updateQuiz(quizId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateQuizMutationResult = NonNullable<Awaited<ReturnType<typeof updateQuiz>>>
+    export type UpdateQuizMutationBody = QuizUpdateRequest
+    export type UpdateQuizMutationError = ErrorDto
+    export type UpdateQuizMutationVariables = {quizId: string;data: QuizUpdateRequest}
+
+    export const useUpdateQuiz = <TError = ErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateQuiz>>, TError,UpdateQuizMutationVariables, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateQuiz>>,
+        TError,
+        UpdateQuizMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateQuizMutationOptions(options), queryClient);
+    }
+    export const upsertQuestions = (
     quizId: string,
     quizQuestionsUpsertRequest: QuizQuestionsUpsertRequest,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal

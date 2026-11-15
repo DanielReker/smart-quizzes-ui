@@ -8,10 +8,16 @@ import type { QuestionDtoVariant } from './questionDtoVariant';
 import type { QuizResponseStatus } from './quizResponseStatus';
 
 export interface QuizResponse {
+  allowAnonymous: boolean;
   createdDate: string;
   /** @nullable */
   description?: string | null;
   id: string;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  maxAttempts?: number | null;
   mySubmissionsCount: number;
   /**
      * @minLength 0
@@ -20,4 +26,6 @@ export interface QuizResponse {
   name: string;
   questions: QuestionDtoVariant[];
   status: QuizResponseStatus;
+  /** @nullable */
+  timeToComplete?: string | null;
 }
