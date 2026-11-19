@@ -333,6 +333,45 @@ paths:
         - bearer-key: []
       tags:
         - quiz-controller
+  /quizzes/{quizId}/short:
+    get:
+      operationId: getQuizShort
+      parameters:
+        - in: path
+          name: quizId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ShortQuizResponse"
+          description: OK
+        "401":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Unauthorized
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Not Found
+        "409":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Conflict
+      security:
+        - bearer-key: []
+      tags:
+        - quiz-controller
   /quizzes/{quizId}/stats:
     get:
       operationId: getStats
@@ -382,12 +421,6 @@ paths:
           schema:
             type: string
             format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SubmissionCreateRequest"
-        required: true
       responses:
         "200":
           content:
@@ -417,6 +450,174 @@ paths:
         - bearer-key: []
       tags:
         - quiz-controller
+  /submissions/{submissionId}:
+    get:
+      operationId: getSubmission
+      parameters:
+        - in: path
+          name: submissionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubmissionResponse"
+          description: OK
+        "401":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Unauthorized
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Not Found
+        "409":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Conflict
+      security:
+        - bearer-key: []
+      tags:
+        - submission-controller
+  /submissions/{submissionId}/answers:
+    post:
+      operationId: submitAnswers
+      parameters:
+        - in: path
+          name: submissionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnswersSubmitRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubmissionResponse"
+          description: OK
+        "401":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Unauthorized
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Not Found
+        "409":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Conflict
+      security:
+        - bearer-key: []
+      tags:
+        - submission-controller
+  /submissions/{submissionId}/finish:
+    post:
+      operationId: finishSubmission
+      parameters:
+        - in: path
+          name: submissionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubmissionResponse"
+          description: OK
+        "401":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Unauthorized
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Not Found
+        "409":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Conflict
+      security:
+        - bearer-key: []
+      tags:
+        - submission-controller
+  /submissions/{submissionId}/revealed-hints:
+    post:
+      operationId: revealHint
+      parameters:
+        - in: path
+          name: submissionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RevealHintRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/HintDto"
+          description: OK
+        "401":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Unauthorized
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Not Found
+        "409":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+          description: Conflict
+      security:
+        - bearer-key: []
+      tags:
+        - submission-controller
   /users:
     post:
       operationId: createUser
@@ -620,33 +821,100 @@ components:
           type: string
       required:
         - prompt
-    AnswerDto:
+    AnswerResponseObject:
       type: object
       discriminator:
         mapping:
-          multi-choice: "#/components/schemas/MultiChoiceAnswerDto"
-          single-choice: "#/components/schemas/SingleChoiceAnswerDto"
-          text: "#/components/schemas/TextAnswerDto"
+          multi-choice: "#/components/schemas/MultiChoiceAnswerResponse"
+          single-choice: "#/components/schemas/SingleChoiceAnswerResponse"
+          text: "#/components/schemas/TextAnswerResponse"
         propertyName: dtype
       properties:
-        dtype:
-          type: string
-        id:
+        answeredAt:
           type:
             - string
             - "null"
-          format: uuid
-        questionId:
+          format: date-time
+        dtype:
+          type: string
+        id:
           type: string
           format: uuid
+        nextHintsPenalties:
+          type: array
+          items:
+            type: number
+        questionDescription:
+          type:
+            - string
+            - "null"
+        questionName:
+          type: string
+        revealedHints:
+          type: array
+          items:
+            $ref: "#/components/schemas/HintDto"
+        score:
+          type:
+            - number
+            - "null"
+        scoredAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        status:
+          type:
+            - string
+            - "null"
+          enum:
+            - IN_PROCESS
+            - ANSWERED
+            - UNANSWERED
+            - SCORING
+            - SCORED
       required:
         - dtype
-        - questionId
-    AnswerDtoVariant:
+        - id
+        - nextHintsPenalties
+        - questionName
+        - revealedHints
+    AnswerResponseObjectVariant:
       oneOf:
-        - $ref: "#/components/schemas/MultiChoiceAnswerDto"
-        - $ref: "#/components/schemas/SingleChoiceAnswerDto"
-        - $ref: "#/components/schemas/TextAnswerDto"
+        - $ref: "#/components/schemas/MultiChoiceAnswerResponse"
+        - $ref: "#/components/schemas/SingleChoiceAnswerResponse"
+        - $ref: "#/components/schemas/TextAnswerResponse"
+    AnswerSubmitRequest:
+      type: object
+      discriminator:
+        mapping:
+          multi-choice: "#/components/schemas/MultiChoiceAnswerSubmitRequest"
+          single-choice: "#/components/schemas/SingleChoiceAnswerSubmitRequest"
+          text: "#/components/schemas/TextAnswerSubmitRequest"
+        propertyName: dtype
+      properties:
+        answerId:
+          type: string
+          format: uuid
+        dtype:
+          type: string
+      required:
+        - answerId
+        - dtype
+    AnswerSubmitRequestVariant:
+      oneOf:
+        - $ref: "#/components/schemas/MultiChoiceAnswerSubmitRequest"
+        - $ref: "#/components/schemas/SingleChoiceAnswerSubmitRequest"
+        - $ref: "#/components/schemas/TextAnswerSubmitRequest"
+    AnswersSubmitRequest:
+      type: object
+      properties:
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnswerSubmitRequestVariant"
+      required:
+        - answers
     ChangeCredentialsRequest:
       type: object
       properties:
@@ -674,7 +942,9 @@ components:
             - "null"
           format: uuid
         isCorrect:
-          type: boolean
+          type:
+            - boolean
+            - "null"
         name:
           type: string
         position:
@@ -682,7 +952,6 @@ components:
           format: int32
           minimum: 0
       required:
-        - isCorrect
         - name
         - position
     ChoiceStatsDto:
@@ -731,9 +1000,31 @@ components:
       properties:
         password:
           type: string
-    MultiChoiceAnswerDto:
+    MultiChoiceAnswerResponse:
       allOf:
-        - $ref: "#/components/schemas/AnswerDto"
+        - $ref: "#/components/schemas/AnswerResponseObject"
+        - type: object
+          properties:
+            possibleChoices:
+              type: array
+              items:
+                $ref: "#/components/schemas/ChoiceDto"
+            selectedChoiceIds:
+              type:
+                - array
+                - "null"
+              items:
+                type: string
+                format: uuid
+      required:
+        - id
+        - nextHintsPenalties
+        - possibleChoices
+        - questionName
+        - revealedHints
+    MultiChoiceAnswerSubmitRequest:
+      allOf:
+        - $ref: "#/components/schemas/AnswerSubmitRequest"
         - type: object
           properties:
             selectedChoiceIds:
@@ -742,7 +1033,7 @@ components:
                 type: string
                 format: uuid
       required:
-        - questionId
+        - answerId
         - selectedChoiceIds
     MultiChoiceQuestionDto:
       allOf:
@@ -964,6 +1255,14 @@ components:
             $ref: "#/components/schemas/ShortQuizResponse"
       required:
         - quizzes
+    RevealHintRequest:
+      type: object
+      properties:
+        answerId:
+          type: string
+          format: uuid
+      required:
+        - answerId
     SessionResponse:
       type: object
       properties:
@@ -996,6 +1295,9 @@ components:
           type: string
           maxLength: 255
           minLength: 0
+        numberOfQuestions:
+          type: integer
+          format: int32
         status:
           type: string
           enum:
@@ -1012,17 +1314,38 @@ components:
         - createdDate
         - id
         - name
+        - numberOfQuestions
         - status
-    SingleChoiceAnswerDto:
+    SingleChoiceAnswerResponse:
       allOf:
-        - $ref: "#/components/schemas/AnswerDto"
+        - $ref: "#/components/schemas/AnswerResponseObject"
+        - type: object
+          properties:
+            possibleChoices:
+              type: array
+              items:
+                $ref: "#/components/schemas/ChoiceDto"
+            selectedChoiceId:
+              type:
+                - string
+                - "null"
+              format: uuid
+      required:
+        - id
+        - nextHintsPenalties
+        - possibleChoices
+        - questionName
+        - revealedHints
+    SingleChoiceAnswerSubmitRequest:
+      allOf:
+        - $ref: "#/components/schemas/AnswerSubmitRequest"
         - type: object
           properties:
             selectedChoiceId:
               type: string
               format: uuid
       required:
-        - questionId
+        - answerId
         - selectedChoiceId
     SingleChoiceQuestionDto:
       allOf:
@@ -1066,45 +1389,75 @@ components:
       required:
         - stats
         - submissionsCount
-    SubmissionCreateRequest:
-      type: object
-      properties:
-        answers:
-          type: array
-          items:
-            $ref: "#/components/schemas/AnswerDtoVariant"
-      required:
-        - answers
     SubmissionResponse:
       type: object
       properties:
         answers:
           type: array
           items:
-            $ref: "#/components/schemas/AnswerDtoVariant"
-        createdDate:
-          type: string
-          format: date-time
+            $ref: "#/components/schemas/AnswerResponseObjectVariant"
         id:
           type: string
           format: uuid
+        manuallyFinishedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
         quizId:
           type: string
           format: uuid
+        score:
+          type:
+            - number
+            - "null"
+        startedAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - IN_PROCESS
+            - COMPLETING
+            - SCORING
+            - FINISHED
       required:
         - answers
-        - createdDate
         - id
         - quizId
-    TextAnswerDto:
+        - startedAt
+        - status
+    TextAnswerResponse:
       allOf:
-        - $ref: "#/components/schemas/AnswerDto"
+        - $ref: "#/components/schemas/AnswerResponseObject"
+        - type: object
+          properties:
+            feedback:
+              type:
+                - string
+                - "null"
+            sampleCorrectAnswer:
+              type:
+                - string
+                - "null"
+            value:
+              type:
+                - string
+                - "null"
+      required:
+        - id
+        - nextHintsPenalties
+        - questionName
+        - revealedHints
+    TextAnswerSubmitRequest:
+      allOf:
+        - $ref: "#/components/schemas/AnswerSubmitRequest"
         - type: object
           properties:
             value:
               type: string
       required:
-        - questionId
+        - answerId
         - value
     TextQuestionDto:
       allOf:

@@ -7,6 +7,7 @@ import {RouterProvider} from "react-router/dom";
 import {createBrowserRouter} from "react-router";
 import {EditQuizPage} from "./pages/EditQuizPage.tsx";
 import {TakeQuizPage} from "./pages/TakeQuizPage.tsx";
+import {SubmissionPage} from "./pages/SubmissionPage.tsx";
 import {CssBaseline} from "@mui/material";
 import {AuthPage} from "./pages/AuthPage.tsx";
 import {StatsPage} from "./pages/StatsPage.tsx";
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
             { path: 'quizzes/:quizId/edit', element: <EditQuizPage /> },
             { path: 'quizzes/:quizId', element: <TakeQuizPage /> },
             { path: 'quizzes/:quizId/stats', element: <StatsPage /> },
+            { path: 'submissions/:submissionId', element: <SubmissionPage /> },
         ],
     },
 ]);

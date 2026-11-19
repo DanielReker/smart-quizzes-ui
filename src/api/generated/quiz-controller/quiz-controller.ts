@@ -32,8 +32,8 @@ import type {
   QuizResponse,
   QuizUpdateRequest,
   QuizzesResponse,
+  ShortQuizResponse,
   StatsResponse,
-  SubmissionCreateRequest,
   SubmissionResponse
 } from '../model';
 
@@ -595,7 +595,92 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getStartQuizMutationOptions(options), queryClient);
     }
-    export const getStats = (
+    export const getQuizShort = (
+    quizId: string,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+
+
+      return customInstance<ShortQuizResponse>(
+      {url: `/quizzes/${quizId}/short`, method: 'GET', signal
+    },
+      options);
+    }
+
+
+
+
+export const getGetQuizShortQueryKey = (quizId: string,) => {
+    return [
+    `/quizzes/${quizId}/short`
+    ] as const;
+    }
+
+
+export const getGetQuizShortQueryOptions = <TData = Awaited<ReturnType<typeof getQuizShort>>, TError = ErrorDto>(quizId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuizShort>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetQuizShortQueryKey(quizId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getQuizShort>>> = ({ signal }) => getQuizShort(quizId, requestOptions, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: quizId !== null && quizId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getQuizShort>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetQuizShortQueryResult = NonNullable<Awaited<ReturnType<typeof getQuizShort>>>
+export type GetQuizShortQueryError = ErrorDto
+
+
+export function useGetQuizShort<TData = Awaited<ReturnType<typeof getQuizShort>>, TError = ErrorDto>(
+ quizId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuizShort>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getQuizShort>>,
+          TError,
+          Awaited<ReturnType<typeof getQuizShort>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetQuizShort<TData = Awaited<ReturnType<typeof getQuizShort>>, TError = ErrorDto>(
+ quizId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuizShort>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getQuizShort>>,
+          TError,
+          Awaited<ReturnType<typeof getQuizShort>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetQuizShort<TData = Awaited<ReturnType<typeof getQuizShort>>, TError = ErrorDto>(
+ quizId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuizShort>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetQuizShort<TData = Awaited<ReturnType<typeof getQuizShort>>, TError = ErrorDto>(
+ quizId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuizShort>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetQuizShortQueryOptions(quizId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getStats = (
     quizId: string,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
@@ -682,15 +767,12 @@ export function useGetStats<TData = Awaited<ReturnType<typeof getStats>>, TError
 
 export const createSubmission = (
     quizId: string,
-    submissionCreateRequest: SubmissionCreateRequest,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
 
 
       return customInstance<SubmissionResponse>(
-      {url: `/quizzes/${quizId}/submissions`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: submissionCreateRequest, signal
+      {url: `/quizzes/${quizId}/submissions`, method: 'POST', signal
     },
       options);
     }
@@ -715,9 +797,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof createSubmission>>, CreateSubmissionMutationVariables> = (props) => {
-          const {quizId,data} = props ?? {};
+          const {quizId} = props ?? {};
 
-          return  createSubmission(quizId,data,requestOptions)
+          return  createSubmission(quizId,requestOptions)
         }
 
 
@@ -728,9 +810,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type CreateSubmissionMutationResult = NonNullable<Awaited<ReturnType<typeof createSubmission>>>
-    export type CreateSubmissionMutationBody = SubmissionCreateRequest
+
     export type CreateSubmissionMutationError = ErrorDto
-    export type CreateSubmissionMutationVariables = {quizId: string;data: SubmissionCreateRequest}
+    export type CreateSubmissionMutationVariables = {quizId: string}
 
     export const useCreateSubmission = <TError = ErrorDto,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createSubmission>>, TError,CreateSubmissionMutationVariables, TContext>, request?: SecondParameter<typeof customInstance>}

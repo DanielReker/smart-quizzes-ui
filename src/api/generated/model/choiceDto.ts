@@ -8,7 +8,8 @@
 export interface ChoiceDto {
   /** @nullable */
   id?: string | null;
-  isCorrect: boolean;
+  /** @nullable */
+  isCorrect?: boolean | null;
   name: string;
   /** @minimum 0 */
   position: number;

@@ -22,6 +22,7 @@ export interface ShortQuizResponse {
      * @maxLength 255
      */
   name: string;
+  numberOfQuestions: number;
   status: ShortQuizResponseStatus;
   /** @nullable */
   timeToComplete?: string | null;

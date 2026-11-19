@@ -4,11 +4,17 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { AnswerDtoVariant } from './answerDtoVariant';
+import type { AnswerResponseObjectVariant } from './answerResponseObjectVariant';
+import type { SubmissionResponseStatus } from './submissionResponseStatus';
 
 export interface SubmissionResponse {
-  answers: AnswerDtoVariant[];
-  createdDate: string;
+  answers: AnswerResponseObjectVariant[];
   id: string;
+  /** @nullable */
+  manuallyFinishedAt?: string | null;
   quizId: string;
+  /** @nullable */
+  score?: number | null;
+  startedAt: string;
+  status: SubmissionResponseStatus;
 }

@@ -5,9 +5,6 @@
  * OpenAPI spec version: v0
  */
 
-export interface AnswerDto {
-  dtype: string;
-  /** @nullable */
-  id?: string | null;
-  questionId: string;
+export interface RevealHintRequest {
+  answerId: string;
 }
